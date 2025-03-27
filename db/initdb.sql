@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS series (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	title VARCHAR(150) NOT NULL,
+	status VARCHAR(20) NOT NULL,
+	total_episodes INTEGER NOT NULL,
+	last_watched INTEGER NOT NULL,
+	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CHECK (total_episodes > 0),
+	CHECK (last_watched >= 0)
+)
