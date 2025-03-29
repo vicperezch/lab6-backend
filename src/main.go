@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -22,14 +22,16 @@ func main() {
 
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
 	}))
 	router.Get("/api/series", getSeries)
 	router.Get("/api/series/{id}", getSeriesById)
 	router.Post("/api/series", createSeries)
+	router.Put("/api/series/{id}", updateSeries)
+	router.Delete("/api/series/{id}", deleteSeries)
 
 	http.ListenAndServe(":8080", router)
 }

@@ -11,7 +11,7 @@ import (
 
 func getSeries(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT id, ranking, title, status, total_episodes, last_watched FROM series")
-	
+
 	if err != nil {
 		log.Fatal("Failed to get all series:", err)
 		return
@@ -31,13 +31,13 @@ func getSeries(w http.ResponseWriter, r *http.Request) {
 
 func getSeriesById(w http.ResponseWriter, r *http.Request) {
 	idString := chi.URLParam(r, "id")
-	
+
 	id, idErr := strconv.Atoi(idString)
 	if idErr != nil {
 		respondWithError(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
-	
+
 	row := db.QueryRow("SELECT id, ranking, title, status, total_episodes, last_watched FROM series WHERE id = ?", id)
 
 	var s Series
@@ -53,7 +53,8 @@ func getSeriesById(w http.ResponseWriter, r *http.Request) {
 func createSeries(w http.ResponseWriter, r *http.Request) {
 	var req PostRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondWithError(w, "Invalid request", http.StatusBadRequest)		
+		respondWithError(w, "Invalid request", http.StatusBadRequest)
+		return
 	}
 
 	_, err := db.Exec(
@@ -68,4 +69,48 @@ func createSeries(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, "Series created successfully")
+}
+
+func updateSeries(w http.ResponseWriter, r *http.Request) {
+	idString := chi.URLParam(r, "id")
+
+	id, idErr := strconv.Atoi(idString)
+	if idErr != nil {
+		respondWithError(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	var series Series
+	if err := json.NewDecoder(r.Body).Decode(&series); err != nil {
+		respondWithError(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	query := "UPDATE series SET ranking = ?, title = ?, status = ?, total_episodes = ?, last_watched = ? WHERE id = ?"
+	_, err := db.Exec(query, series.Ranking, series.Title, series.Status, series.TotalEpisodes, series.LastWatched, id)
+
+	if err != nil {
+		respondWithError(w, "Failed to update series", http.StatusInternalServerError)
+		return
+	}
+
+	respondWithJSON(w, "Series updated successfully")
+}
+
+func deleteSeries(w http.ResponseWriter, r *http.Request) {
+	idString := chi.URLParam(r, "id")
+
+	id, idErr := strconv.Atoi(idString)
+	if idErr != nil {
+		respondWithError(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	_, err := db.Exec("DELETE FROM series WHERE id = ?", id)
+	if err != nil {
+		respondWithError(w, "Failed to delete series", http.StatusInternalServerError)
+		return
+	}
+
+	respondWithJSON(w, "Series deleted successfully")
 }
