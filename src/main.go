@@ -28,6 +28,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 	router.Get("/api/series", getSeries)
+	router.Get("/api/series/{id}", getSeriesById)
 	router.Post("/api/series", createSeries)
 
 	http.ListenAndServe(":8080", router)

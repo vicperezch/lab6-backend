@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func getSeries(w http.ResponseWriter, r *http.Request) {
@@ -24,6 +27,27 @@ func getSeries(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, series)
+}
+
+func getSeriesById(w http.ResponseWriter, r *http.Request) {
+	idString := chi.URLParam(r, "id")
+	
+	id, idErr := strconv.Atoi(idString)
+	if idErr != nil {
+		respondWithError(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+	
+	row := db.QueryRow("SELECT id, ranking, title, status, total_episodes, last_watched FROM series WHERE id = ?", id)
+
+	var s Series
+	err := row.Scan(&s.Id, &s.Ranking, &s.Title, &s.Status, &s.TotalEpisodes, &s.LastWatched)
+	if err != nil {
+		respondWithError(w, "Failed to get series", http.StatusInternalServerError)
+		return
+	}
+
+	respondWithJSON(w, s)
 }
 
 func createSeries(w http.ResponseWriter, r *http.Request) {
