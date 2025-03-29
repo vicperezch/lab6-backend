@@ -8,3 +8,11 @@ type Series struct {
 	TotalEpisodes	int `json:"totalEpisodes"`
 	LastWatched	int `json:"lastEpisodeWatched"`
 }
+
+type PostRequest struct {
+	Title string `json:"title"`
+	Status string `json:"status"`
+	LastWatched int `json:"lastEpisodeWatched"`
+	TotalEpisodes int `json:"totalEpisodes"`
+	Ranking int `json:"ranking"`
+}
