@@ -34,6 +34,7 @@ func main() {
 	router.Put("/api/series/{id}", updateSeries)
 	router.Delete("/api/series/{id}", deleteSeries)
 	router.Patch("/api/series/{id}/episode", incrementEpisode)
+	router.Patch("/api/series/{id}/status", updateStatus)
 
 	http.ListenAndServe(":8080", router)
 }

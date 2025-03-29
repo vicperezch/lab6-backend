@@ -132,3 +132,27 @@ func incrementEpisode(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, "Episode incremented successfully")
 }
+
+func updateStatus(w http.ResponseWriter, r *http.Request) {
+	idString := chi.URLParam(r, "id")
+
+	id, idErr := strconv.Atoi(idString)
+	if idErr != nil {
+		respondWithError(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	var updateRequest UpdateStatusRequest
+	if err := json.NewDecoder(r.Body).Decode(&updateRequest); err != nil {
+		respondWithError(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	_, err := db.Exec("UPDATE series SET status = ? WHERE id = ?", updateRequest.Status, id)
+	if err != nil {
+		respondWithError(w, "Failed to update status", http.StatusInternalServerError)
+		return
+	}
+
+	respondWithJSON(w, "Status updated successfully")
+}
