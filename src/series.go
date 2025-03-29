@@ -114,3 +114,21 @@ func deleteSeries(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, "Series deleted successfully")
 }
+
+func incrementEpisode(w http.ResponseWriter, r *http.Request) {
+	idString := chi.URLParam(r, "id")
+
+	id, idErr := strconv.Atoi(idString)
+	if idErr != nil {
+		respondWithError(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	_, err := db.Exec("UPDATE series SET last_watched = last_watched + 1 WHERE id = ?", id)
+	if err != nil {
+		respondWithError(w, "Failed to increment episode", http.StatusInternalServerError)
+		return
+	}
+
+	respondWithJSON(w, "Episode incremented successfully")
+}
