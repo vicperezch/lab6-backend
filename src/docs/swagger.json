@@ -1,0 +1,319 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Go API that provides the backend to a series backlog tracker, using a SQLite database.",
+        "title": "Series backlog API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api/series",
+    "paths": {
+        "/series/": {
+            "get": {
+                "description": "Retrieves all series from the database.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "series"
+                ],
+                "summary": "Get list of all series.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main.Series"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new series entry in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "series"
+                ],
+                "summary": "Create a new series.",
+                "parameters": [
+                    {
+                        "description": "Series data",
+                        "name": "series",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.PostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/series/{id}": {
+            "get": {
+                "description": "Retrieves one series from the database by its ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "series"
+                ],
+                "summary": "Get one series by ID.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Series ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Series"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Changes the attributes of an existing series.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "series"
+                ],
+                "summary": "Update a series.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Series ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Series new data",
+                        "name": "series",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Series"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes an existing series entry in the database.",
+                "tags": [
+                    "series"
+                ],
+                "summary": "Deletes a series.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Series ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/series/{id}/downvote": {
+            "patch": {
+                "description": "Decrements the rank of a series by one.",
+                "tags": [
+                    "series"
+                ],
+                "summary": "Downvotes one series.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Series ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/series/{id}/episode": {
+            "patch": {
+                "description": "Increments the last watched episode of a series by one.",
+                "tags": [
+                    "series"
+                ],
+                "summary": "Increments an episode for a series.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Series ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/series/{id}/status": {
+            "patch": {
+                "description": "Changes the status of a series to a new one.",
+                "tags": [
+                    "series"
+                ],
+                "summary": "Updates the status of one series.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Series ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New status",
+                        "name": "series",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.UpdateStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/series/{id}/upvote": {
+            "patch": {
+                "description": "Increments the rank of a series by one.",
+                "tags": [
+                    "series"
+                ],
+                "summary": "Upvotes one series.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Series ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.PostRequest": {
+            "type": "object",
+            "properties": {
+                "lastEpisodeWatched": {
+                    "type": "integer"
+                },
+                "ranking": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "totalEpisodes": {
+                    "type": "integer"
+                }
+            }
+        },
+        "main.Series": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "lastEpisodeWatched": {
+                    "type": "integer"
+                },
+                "ranking": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "totalEpisodes": {
+                    "type": "integer"
+                }
+            }
+        },
+        "main.UpdateStatusRequest": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

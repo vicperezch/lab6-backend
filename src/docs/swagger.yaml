@@ -1,0 +1,210 @@
+basePath: /api/series
+definitions:
+  main.PostRequest:
+    properties:
+      lastEpisodeWatched:
+        type: integer
+      ranking:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      totalEpisodes:
+        type: integer
+    type: object
+  main.Series:
+    properties:
+      id:
+        type: integer
+      lastEpisodeWatched:
+        type: integer
+      ranking:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      totalEpisodes:
+        type: integer
+    type: object
+  main.UpdateStatusRequest:
+    properties:
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Go API that provides the backend to a series backlog tracker, using
+    a SQLite database.
+  title: Series backlog API
+  version: "1.0"
+paths:
+  /series/:
+    get:
+      description: Retrieves all series from the database.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Series'
+            type: array
+      summary: Get list of all series.
+      tags:
+      - series
+    post:
+      consumes:
+      - application/json
+      description: Creates a new series entry in the database.
+      parameters:
+      - description: Series data
+        in: body
+        name: series
+        required: true
+        schema:
+          $ref: '#/definitions/main.PostRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Create a new series.
+      tags:
+      - series
+  /series/{id}:
+    delete:
+      description: Deletes an existing series entry in the database.
+      parameters:
+      - description: Series ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Deletes a series.
+      tags:
+      - series
+    get:
+      description: Retrieves one series from the database by its ID.
+      parameters:
+      - description: Series ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Series'
+      summary: Get one series by ID.
+      tags:
+      - series
+    put:
+      consumes:
+      - application/json
+      description: Changes the attributes of an existing series.
+      parameters:
+      - description: Series ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Series new data
+        in: body
+        name: series
+        required: true
+        schema:
+          $ref: '#/definitions/main.Series'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Update a series.
+      tags:
+      - series
+  /series/{id}/downvote:
+    patch:
+      description: Decrements the rank of a series by one.
+      parameters:
+      - description: Series ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Downvotes one series.
+      tags:
+      - series
+  /series/{id}/episode:
+    patch:
+      description: Increments the last watched episode of a series by one.
+      parameters:
+      - description: Series ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Increments an episode for a series.
+      tags:
+      - series
+  /series/{id}/status:
+    patch:
+      description: Changes the status of a series to a new one.
+      parameters:
+      - description: Series ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New status
+        in: body
+        name: series
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateStatusRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Updates the status of one series.
+      tags:
+      - series
+  /series/{id}/upvote:
+    patch:
+      description: Increments the rank of a series by one.
+      parameters:
+      - description: Series ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Upvotes one series.
+      tags:
+      - series
+swagger: "2.0"
