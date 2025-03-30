@@ -43,6 +43,19 @@ paths:
   /series/:
     get:
       description: Retrieves all series from the database.
+      parameters:
+      - description: Title to search
+        in: query
+        name: search
+        type: string
+      - description: Filter series by status
+        in: query
+        name: status
+        type: string
+      - description: Sort order of the series
+        in: query
+        name: sort
+        type: string
       produces:
       - application/json
       responses:

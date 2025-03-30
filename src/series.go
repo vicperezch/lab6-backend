@@ -13,10 +13,38 @@ import (
 // @Description Retrieves all series from the database.
 // @Tags series
 // @Produce json
+// @Param search query string false "Title to search"
+// @Param status query string false "Filter series by status"
+// @Param sort query string false "Sort order of the series"
 // @Success 200 {array} Series
 // @router /series/ [get]
 func getSeries(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, ranking, title, status, total_episodes, last_watched FROM series")
+	query := "SELECT id, ranking, title, status, total_episodes, last_watched FROM series"
+	sort := "asc"
+
+	queryParams := r.URL.Query()
+	if sortParam, exists := queryParams["sort"]; exists {
+		if sortParam[0] == "asc" {
+			sort = "desc"
+		}
+	}
+
+	statusParam, statusExists := queryParams["status"]
+	if statusExists && statusParam[0] != "" {
+		query += " WHERE status = " + "\"" + statusParam[0] + "\""
+	}
+
+	if titleParam, exists := queryParams["search"]; exists && titleParam[0] != "" {
+		if statusParam[0] != "" {
+			query += " AND title = " + "\"" + titleParam[0] + "\""
+
+		} else {
+			query += " WHERE title = " + "\"" + titleParam[0] + "\""
+		}
+	}
+
+	query += " ORDER BY ranking " + sort
+	rows, err := db.Query(query)
 
 	if err != nil {
 		log.Fatal("Failed to get all series:", err)

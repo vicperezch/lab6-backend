@@ -18,6 +18,26 @@
                     "series"
                 ],
                 "summary": "Get list of all series.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Title to search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter series by status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order of the series",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
