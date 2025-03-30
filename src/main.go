@@ -36,6 +36,7 @@ func main() {
 	router.Patch("/api/series/{id}/episode", incrementEpisode)
 	router.Patch("/api/series/{id}/status", updateStatus)
 	router.Patch("/api/series/{id}/upvote", upvoteSeries)
+	router.Patch("/api/series/{id}/downvote", downvoteSeries)
 
 	http.ListenAndServe(":8080", router)
 }
