@@ -181,6 +181,11 @@ func upvoteSeries(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if currentRanking == 1 {
+		respondWithJSON(w, "Series is already rank 1")
+		return
+	}
+
 	_, err = tx.Exec("UPDATE series SET ranking = (SELECT count(id) + 1 FROM series) WHERE ranking = ? - 1", currentRanking)
 	if err != nil {
 		respondWithError(w, "Failed to upvote", http.StatusInternalServerError)
@@ -224,10 +229,15 @@ func downvoteSeries(w http.ResponseWriter, r *http.Request) {
 	defer tx.Rollback()
 
 	var currentRanking int
-	row := tx.QueryRow("SELECT ranking FROM series WHERE id = ?", id)
+	row := tx.QueryRow("SELECT CASE WHEN ranking = (SELECT COUNT(id) FROM series) THEN -1 ELSE ranking END AS adjusted_ranking FROM series WHERE id = ?", id)
 	err = row.Scan(&currentRanking)
 	if err != nil {
 		respondWithError(w, "Failed to get series", http.StatusInternalServerError)
+		return
+	}
+
+	if currentRanking == -1 {
+		respondWithJSON(w, "Series is already at the bottom rank")
 		return
 	}
 
