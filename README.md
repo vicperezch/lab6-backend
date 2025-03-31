@@ -41,3 +41,6 @@ Once the server is running, open in your browser:
 ```
 http://localhost:8080/swagger/index.html
 ```
+
+## Frontend example
+![image](https://github.com/user-attachments/assets/91767474-3986-44b4-82b1-3c80ea91a077)
