@@ -18,7 +18,7 @@ var db *sql.DB
 // @title Series backlog API
 // @version 1.0
 // @description Go API that provides the backend to a series backlog tracker, using a SQLite database.
-// @BasePath /api/series
+// @BasePath localhost:8080/api
 func main() {
 	var err error
 	db, err = sql.Open("sqlite3", "../db/db.sqlite")

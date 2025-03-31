@@ -168,12 +168,33 @@ func deleteSeries(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := db.Exec("DELETE FROM series WHERE id = ?", id)
+	tx, err := db.Begin()
+	if err != nil {
+		respondWithError(w, "Failed to delete series", http.StatusInternalServerError)
+		return
+	}
+	defer tx.Rollback()
+
+	var deletedRanking int
+	err = tx.QueryRow("SELECT ranking FROM series WHERE id = ?", id).Scan(&deletedRanking)
 	if err != nil {
 		respondWithError(w, "Failed to delete series", http.StatusInternalServerError)
 		return
 	}
 
+	_, err = tx.Exec("DELETE FROM series WHERE id = ?", id)
+	if err != nil {
+		respondWithError(w, "Failed to delete series", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = tx.Exec("UPDATE series SET ranking = ranking - 1 WHERE ranking > ?", deletedRanking)
+	if err != nil {
+		respondWithError(w, "Failed to update rankings", http.StatusInternalServerError)
+		return
+	}
+
+	tx.Commit()
 	respondWithJSON(w, "Series deleted successfully")
 }
 
