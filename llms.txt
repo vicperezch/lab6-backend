@@ -1,0 +1,9 @@
+# Series backlog API
+
+> API built with Go, using a Chi router and SQLite database to store data.
+
+This API allows for managing a backlog of TV series. It provides a series of endpoints to create, read, update and delete series information. It also contains a list of endpoints to partially update a series: increment the last watched episode, change the status, increment and decrement its rank.
+
+## Documentation
+
+- [API README and quickstart guide](https://raw.githubusercontent.com/vicperezch/lab6-backend/refs/heads/main/README.md)
